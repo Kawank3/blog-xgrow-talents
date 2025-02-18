@@ -9,8 +9,8 @@ export default function Header() {
           <h1 className="logo">Xgrow Blog</h1>
           <nav>
             <ul className="nav-links">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/login">Logout</Link></li>
+              <li><Link to="/homem">Home</Link></li>
+              <li><Link to="/">Logout</Link></li>
             </ul>
           </nav>
         </div>

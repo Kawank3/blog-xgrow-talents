@@ -1,10 +1,15 @@
 .header {
   background-color: #ffffff;
-  color: #1B1B1F;
+  color: #1b1b1f;
   padding: 16px 0;
   border-bottom: 0.5px solid #a7a7ac;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 .container {
