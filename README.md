@@ -10,6 +10,7 @@ npm install
 npx prisma generate
 npm run dev
 ```
+> O .env pode se encontrado ao fim do README
 
 ### Cliente
 ```
