@@ -5,8 +5,8 @@ import { context } from "../Context";
 
 const PrivateRoute = (props) => {
   const store = useContext(context);
-  const token = store.token[0];
-  return token ? props.children : <Navigate to="/login" replace={true} />;
+  const user = store.user[0];
+  return user ? props.children : <Navigate to="/login" replace={true} />;
 };
 
 export default PrivateRoute;

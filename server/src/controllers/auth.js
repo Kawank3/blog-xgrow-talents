@@ -58,8 +58,9 @@ export const signIn = async (req, res) => {
       { expiresIn: "2h" }
     );
 
-    res.status(200).send(token);
+    res.status(200).json({ id: user.id, role: user.role, token });
   } catch (err) {
+    console.log(err);
     res.status(401).send("E-mail ou Senha Inválido!");
   }
 };

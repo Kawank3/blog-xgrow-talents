@@ -1,18 +1,31 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { context } from "../../Context";
 
 import Create from "./Create";
+import Users from "./Users";
+import Posts from "./Posts";
 
 const Manage = () => {
   const store = useContext(context);
-  const token = store.token[0];
+  const user = store.user[0];
 
   const [page, setPage] = useState("Criar");
+  const [post, setPost] = useState();
 
-  const onClick = e => {
+  useEffect(() => {
+    if (page != "Criar" && post)
+      setPost();
+  }, [page])
+
+  useEffect(() => {
+    if (post)
+      setPage("Criar");
+  }, [post])
+
+  const onClick = (e) => {
     setPage(e.target.innerText);
-  }
+  };
 
   return (
     <main className="markdown-body">
@@ -26,15 +39,18 @@ const Manage = () => {
             <li>
               <button onClick={onClick}>Posts</button>
             </li>
-            <li>
-              <button onClick={onClick}>Usuários</button>
-            </li>
+            {
+              user.role == "ADMIN" &&
+              <li>
+                <button onClick={onClick}>Usuários</button>
+              </li>
+            }
           </ul>
         </nav>
         <main>
-          {page == "Criar" && <Create token={token} />}
-          {page == "Posts" && <></>}
-          {page == "Usuários" && <></>}
+          {page == "Criar" && <Create user={user} context={post} />}
+          {page == "Posts" && <Posts user={user} context={setPost} />}
+          {page == "Usuários" && <Users user={user} />}
         </main>
       </div>
     </main>

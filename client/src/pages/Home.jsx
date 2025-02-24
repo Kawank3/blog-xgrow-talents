@@ -5,11 +5,10 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch('/api/post')
+    fetch(`/api/post?omit={"authorId":true,"content":true}&limit=10`)
     .then(res => res.json())
-    .then(data => {console.log(data);setPosts(data)})
+    .then(data => setPosts(data))
   }, []);
-
 
   return (
     <main
@@ -29,7 +28,7 @@ const Home = () => {
       <ul style={{ listStyle: "none", padding: 0 }}>
         {
         posts[1] &&
-        posts.slice(1).map(post => <Card titleTag="h2" post={post} />)
+        posts.slice(1).map((post, i) => <Card key={i} titleTag="h2" post={post} />)
         }
       </ul>
     </main>

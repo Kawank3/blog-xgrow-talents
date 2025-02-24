@@ -3,38 +3,40 @@ import { Editor } from "@bytemd/react";
 import { toast } from "sonner";
 import highlight from "@bytemd/plugin-highlight";
 
-const Create = (props) => {
-  const [src, setSrc] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [description, setDescription] = useState("");
+const Create = ({ user, context }) => {
+  const [post, setPost] = useState(context || { content: "" });  
   const [disable, setDisable] = useState(false);
 
   const onClick = async () => {
     setDisable(true);
     try {
-      if (!title)
+      if (!post.title)
         throw "Título Inválido"
-      if (!content)
+      if (!post.content)
         throw "Conteúdo Inválido"
-      if (!description)
+      if (!post.description)
         throw "Descrição Inválida"
 
       let res = await fetch("/api/post", {
-        method: "POST",
-        body: JSON.stringify({ title, description, content, src }),
+        method: post.id ? "PUT" : "POST",
+        body: JSON.stringify({
+          id: post.id ? post.id : undefined,
+          src: post.src,
+          title: post.title,
+          content: post.content,
+          description: post.description,
+        }),
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${props.token}`
+          "Authorization": `Bearer ${user.token}`
         },
-      })
+      });
 
       if (!res.ok)
-        throw "Ops... Erro ao criar o post"
+        throw `Ops... Erro ao ${post.id ? "editar" : "criar"} o post!`;
 
-      let data = await res.json();
-
-      toast.success("Post criado com sucesso!");
+      toast.success(`Post ${post.id ? "editado" : "criado"} com sucesso!`);
+      setPost({ src: "", title: "", content: "", description: "" });
     } catch (err) {
       toast.error(err);
     } finally {
@@ -45,16 +47,16 @@ const Create = (props) => {
   return (
     <>
       <Editor
-        value={content}
+        value={post.content}
         onChange={v => {
-          setContent(v)
+          setPost({ ...post, content: v })
         }}
         plugins={[highlight()]}
       />
-      <input value={title} onChange={e => setTitle(e.target.value)} type="text" placeholder="Título"/>
-      <input value={description} onChange={e => setDescription(e.target.value)} type="text" placeholder="Descrição"/>
-      <input value={src} onChange={e => setSrc(e.target.value)} type="text" placeholder="URL da Imagem (opcional)"/>
-      <button disabled={disable} onClick={onClick}>Criar</button>
+      <input value={post.title} onChange={e => setPost({ ...post, title: e.target.value })} type="text" placeholder="Título"/>
+      <input value={post.description} onChange={e => setPost({ ...post, description: e.target.value })} type="text" placeholder="Descrição"/>
+      <input value={post.src} onChange={e => setPost({ ...post, src: e.target.value })} type="text" placeholder="URL da Imagem (opcional)"/>
+      <button disabled={disable} onClick={onClick}>{post.id ? "Editar" : "Criar"}</button>
     </>
   );
 }

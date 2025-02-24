@@ -6,7 +6,7 @@ const Card = ({ post, titleTag, flexDirection }) => {
   const createdAt = new Date(post.createdAt).toLocaleDateString();
   return (
     <div className="card" style={{ flexDirection }}>
-      <img src={post.src} width={width} />
+      {post.src ? <img src={post.src} width={width} /> : <div/>}
       <div>
         <div>
           <Tag>{post.title}</Tag>

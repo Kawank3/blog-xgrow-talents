@@ -27,6 +27,7 @@ export const Create = async (req, res) => {
 
 export const Read = async (req, res) => {
   const { id, limit, authorId } = req.query;
+  const omit = JSON.parse(req.query.omit || '{}');
 
   try {
     if (id) {
@@ -43,7 +44,7 @@ export const Read = async (req, res) => {
     const posts = await prisma.post.findMany({
       where: authorId ? { authorId } : undefined,
       orderBy: { createdAt: "desc" },
-      take: limit || 10,
+      take: limit ? Number(limit) :  9999,
       include: {
         author: {
           select: {
@@ -51,10 +52,7 @@ export const Read = async (req, res) => {
           }
         }
       },
-      omit: {
-        content: true,
-        authorId: true
-      }
+      omit: omit 
     })
 
     res.status(200).json(posts);
@@ -68,7 +66,7 @@ export const Update = async (req, res) => {
   const { title, description, content, src, id, jwt } = req.body;
 
   try {
-    const updatePost = await prisma.post.update({
+    await prisma.post.update({
       where: jwt.role == "ADMIN" ? { id } : { id, authorId: jwt.id },
       data: {
         title,
@@ -78,29 +76,24 @@ export const Update = async (req, res) => {
       },
     });
 
-    res.status(200).json(updatePost);
+    res.status(200).end();
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .send(
-        "Não é possivel fazer alterações no momento, tente novamente mais tarde!"
-      );
+    res.status(400).send("Error: não foi possível editar o post.");
   }
 };
 
-export const Delete = async (req, res) => {
-  
+export const Delete = async (req, res) => {  
   const { id, jwt } = req.body;
 
   try {
-    const deletePost = await prisma.post.delete({
+    await prisma.post.delete({
       where: jwt.role === "ADMIN" ? { id } : { id, authorId: jwt.id },
     });
 
-    res.status(200).json(deletePost);
+    res.status(200).end();
   } catch (err) {
     console.log(err);
-    res.status(500).send("Erro no servidor");
+    res.status(400).send("Error: não foi possível deletar o post.");
   }
 };

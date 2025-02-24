@@ -5,7 +5,7 @@ import { context } from "../Context";
 
 const Nav = () => {
   const store = useContext(context);
-  const [token, setToken] = store.token;
+  const [user, setUser] = store.user;
 
   return (
     <nav>
@@ -17,14 +17,14 @@ const Nav = () => {
           <Link to="/">Home</Link>
         </li>
         {
-          !token && 
+          !user && 
           <li><Link to="/login">Login</Link></li>
         }
         {
-          token && 
+          user && 
           <>
           <li><Link to="/gerenciar">Gerenciar</Link></li>
-          <li><Link onClick={() => setToken()}>Logout</Link></li>
+          <li><Link onClick={() => setUser()}>Logout</Link></li>
           </>
         }
       </ul>

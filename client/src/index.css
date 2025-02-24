@@ -62,11 +62,23 @@ button:disabled {
 #manage main {
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
 }
 
-.bytemd {
-  height: 400px;
+.manage-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.manage-item h4 {
+  max-width: 50%; 
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.manage-item button {
+  padding: 0.4em;
 }
 
 .card {
@@ -89,9 +101,13 @@ button:disabled {
   gap: 8px;
 }
 
+.bytemd {
+  height: 400px;
+}
+
 /*-----------------------*/
 
-nav ul, #manage nav ul, #manage nav ul li {
+nav ul, #manage nav ul {
   margin: 0;
   padding: 0;
   list-style: none;

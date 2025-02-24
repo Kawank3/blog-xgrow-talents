@@ -8,7 +8,7 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const store = useContext(context);
-  const token = store.token[0];
+  const user = store.user[0];
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -31,7 +31,7 @@ const SignUp = () => {
       });
 
       if (!res.ok)
-        throw "Ops... Erro ao criar a conta";
+        throw "Ops... Erro ao criar a conta!";
 
       toast.success("Conta criada com sucesso!");
       navigate("/login"); 
@@ -42,7 +42,7 @@ const SignUp = () => {
     }
   };
 
-  return token ? (
+  return user ? (
     <Navigate to="/gerenciar" />
   ) : (
     <main className="markdown-body" style={{ flexDirection: "column" }}>

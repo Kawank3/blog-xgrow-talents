@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 const SignIn = () => {
   const store = useContext(context);
-  const [token, setToken] = store.token;
+  const [user, setUser] = store.user;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,8 +15,10 @@ const SignIn = () => {
   const onClick = async () => {
     setDisable(true);
     try {
-      if (!email.match(/^[^@]+@[^@]+\.[^@]+$/)) throw null;
-      if (password.length < 8) throw null;
+      if (!email.match(/^[^@]+@[^@]+\.[^@]+$/)) 
+        throw "";
+      if (password.length < 8) 
+        throw "";
 
       let res = await fetch("/api/auth/signin", {
         method: "POST",
@@ -25,8 +27,12 @@ const SignIn = () => {
           "Content-Type": "application/json",
         },
       });
-      let data = await res.text();
-      setToken(data);
+
+      if (!res.ok)
+        throw "";
+
+      let data = await res.json();
+      setUser(data);
     } catch (err) {
       toast.error("E-mail ou Senha Inválido.");
     } finally {
@@ -34,7 +40,7 @@ const SignIn = () => {
     }
   };
 
-  return token ? (
+  return user ? (
     <Navigate to="/gerenciar" />
   ) : (
     <main className="markdown-body" style={{ flexDirection: "column" }}>

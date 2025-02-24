@@ -2,23 +2,23 @@ import { createContext, useEffect, useState } from "react";
 
 export const context = createContext();
 export const Provider = (props) => {
-  const [token, setToken] = useState("");
+  const [user, setUser] = useState();
 
   useEffect(() => {
-    const storagedToken = localStorage.getItem("token");
-    if (storagedToken)
-      setToken(storagedToken);
+    const storagedUser = localStorage.getItem("user");
+    if (storagedUser)
+      setUser(JSON.parse(storagedUser))
   }, []);
 
   useEffect(() => {
-    if (token)
-      localStorage.setItem("token", token);
+    if (user)
+      localStorage.setItem("user", JSON.stringify(user));
     else
-      localStorage.removeItem("token");
-  }, [token]);
+      localStorage.removeItem("user");
+  }, [user]);
 
   return (
-    <context.Provider value={{ token: [token, setToken] }}>
+    <context.Provider value={{ user: [user, setUser] }}>
       {props.children}
     </context.Provider>
   );
