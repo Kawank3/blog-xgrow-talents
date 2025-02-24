@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
 
 export default function (req, res, next) {
-  const token = req.body.token;
+  const token = req.get("Authorization");
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_USER);
+    const decoded = jwt.verify(token.replace("Bearer ",""), process.env.JWT_SECRET_USER);
     req.body.jwt = decoded;
     next();
   } catch (err) {
-    res.status(400).send("Token Inválido!");
+    res.status(401).send("Token Inválido!");
   }
 }

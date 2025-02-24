@@ -4,6 +4,9 @@ const prisma = new PrismaClient({
   omit: {
     user: {
       password: true
+    },
+    post: {
+      updatedAt: true
     }
   }
 });

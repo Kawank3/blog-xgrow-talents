@@ -16,15 +16,14 @@ import Post from "./pages/Post";
 
 function App() {
   return (
-    <>
     <Router>
+      <Toaster
+        position="bottom-center"
+        offset={{
+          bottom: 72
+        }}
+      />
       <Provider>
-        <Toaster
-          position="bottom-center"
-          offset={{
-            bottom: 72
-          }}
-        />
         <Nav/>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -36,7 +35,6 @@ function App() {
         <Footer/>
       </Provider>
     </Router>
-    </>
   );
 }
 

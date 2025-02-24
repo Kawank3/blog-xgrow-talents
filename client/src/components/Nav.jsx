@@ -5,20 +5,28 @@ import { context } from "../Context";
 
 const Nav = () => {
   const store = useContext(context);
-  const token = store.token[0];
+  const [token, setToken] = store.token;
 
   return (
     <nav>
-      <b><Link to="/">カ Kawan</Link></b>
+      <b>
+        <Link to="/">カ Kawan</Link>
+      </b>
       <ul>
         <li>
           <Link to="/">Home</Link>
         </li>
-        <li>
-          <Link 
-            to={token ? "/gerenciar" : "/login"}
-          >{token ? "Gerenciar" : "Login"}</Link>
-        </li>
+        {
+          !token && 
+          <li><Link to="/login">Login</Link></li>
+        }
+        {
+          token && 
+          <>
+          <li><Link to="/gerenciar">Gerenciar</Link></li>
+          <li><Link onClick={() => setToken()}>Logout</Link></li>
+          </>
+        }
       </ul>
     </nav>
   );

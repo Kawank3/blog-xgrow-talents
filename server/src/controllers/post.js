@@ -1,43 +1,6 @@
 import prisma from "../prisma.js";
 
-export const getAllPosts = async (req, res) => {
-  try {
-    const posts = await prisma.post.findMany({
-      take: 10,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    res.status(200).json(posts);
-  } catch (err) {
-    res
-      .status(500)
-      .send("Erro ao carregar os posts, tente novamente mais tarde!");
-  }
-};
-
-export const getPostById = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const posts = await prisma.post.findUnique({
-      where: { id },
-    });
-
-    if (!posts) {
-      return res.status(400).json({ message: "Post não encontrado" });
-    }
-
-    res.status(200).json(posts);
-  } catch (err) {
-    res
-      .status(500)
-      .send("Erro ao carregar os post, tente novamente mais tarde!");
-  }
-};
-
-export const create = async (req, res) => {
+export const Create = async (req, res) => {
   const { title, description, content, src, jwt } = req.body;
 
   try {
@@ -49,15 +12,59 @@ export const create = async (req, res) => {
         src,
         authorId: jwt.id,
       },
+      omit: {
+        authorId: true,
+        content: true,
+      }
     });
 
     res.status(201).json(post);
   } catch (err) {
-    res.status(400).end();
+    console.log(err);
+    res.status(400).send("Error: post não criado!");
   }
 };
 
-export const update = async (req, res) => {
+export const Read = async (req, res) => {
+  const { id, limit, authorId } = req.query;
+
+  try {
+    if (id) {
+      const post = await prisma.post.findUniqueOrThrow({ 
+        where: { id },
+        omit: {
+          id: true,
+          authorId: true,
+        }
+      });
+      return res.status(200).json(post); 
+    }
+
+    const posts = await prisma.post.findMany({
+      where: authorId ? { authorId } : undefined,
+      orderBy: { createdAt: "desc" },
+      take: limit || 10,
+      include: {
+        author: {
+          select: {
+            name: true
+          }
+        }
+      },
+      omit: {
+        content: true,
+        authorId: true
+      }
+    })
+
+    res.status(200).json(posts);
+  } catch (err) {
+    console.log(err)
+    res.status(500).send("Error: não foi possível obter o(s) post(s).")
+  }
+}
+
+export const Update = async (req, res) => {
   const { title, description, content, src, id, jwt } = req.body;
 
   try {
@@ -79,5 +86,21 @@ export const update = async (req, res) => {
       .send(
         "Não é possivel fazer alterações no momento, tente novamente mais tarde!"
       );
+  }
+};
+
+export const Delete = async (req, res) => {
+  
+  const { id, jwt } = req.body;
+
+  try {
+    const deletePost = await prisma.post.delete({
+      where: jwt.role === "ADMIN" ? { id } : { id, authorId: jwt.id },
+    });
+
+    res.status(200).json(deletePost);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Erro no servidor");
   }
 };
